@@ -1,0 +1,189 @@
+
+LGMVIP Task 1 - Iris Flowers Classification
+Importing the necessary libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+%matplotlib inline
+import warnings
+warnings.filterwarnings('ignore')
+Loading the Iris dataset
+df=pd.read_csv(r'E:\LGM\iris.csv')
+EDA - Data Summarization
+df
+Id	SepalLengthCm	SepalWidthCm	PetalLengthCm	PetalWidthCm	Species
+0	1	5.1	3.5	1.4	0.2	Iris-setosa
+1	2	4.9	3.0	1.4	0.2	Iris-setosa
+2	3	4.7	3.2	1.3	0.2	Iris-setosa
+3	4	4.6	3.1	1.5	0.2	Iris-setosa
+4	5	5.0	3.6	1.4	0.2	Iris-setosa
+...	...	...	...	...	...	...
+145	146	6.7	3.0	5.2	2.3	Iris-virginica
+146	147	6.3	2.5	5.0	1.9	Iris-virginica
+147	148	6.5	3.0	5.2	2.0	Iris-virginica
+148	149	6.2	3.4	5.4	2.3	Iris-virginica
+149	150	5.9	3.0	5.1	1.8	Iris-virginica
+150 rows × 6 columns
+
+df.shape
+(150, 6)
+df.columns
+Index(['Id', 'SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm',
+       'Species'],
+      dtype='object')
+df.head()
+Id	SepalLengthCm	SepalWidthCm	PetalLengthCm	PetalWidthCm	Species
+0	1	5.1	3.5	1.4	0.2	Iris-setosa
+1	2	4.9	3.0	1.4	0.2	Iris-setosa
+2	3	4.7	3.2	1.3	0.2	Iris-setosa
+3	4	4.6	3.1	1.5	0.2	Iris-setosa
+4	5	5.0	3.6	1.4	0.2	Iris-setosa
+df.describe()
+Id	SepalLengthCm	SepalWidthCm	PetalLengthCm	PetalWidthCm
+count	150.000000	150.000000	150.000000	150.000000	150.000000
+mean	75.500000	5.843333	3.054000	3.758667	1.198667
+std	43.445368	0.828066	0.433594	1.764420	0.763161
+min	1.000000	4.300000	2.000000	1.000000	0.100000
+25%	38.250000	5.100000	2.800000	1.600000	0.300000
+50%	75.500000	5.800000	3.000000	4.350000	1.300000
+75%	112.750000	6.400000	3.300000	5.100000	1.800000
+max	150.000000	7.900000	4.400000	6.900000	2.500000
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 150 entries, 0 to 149
+Data columns (total 6 columns):
+ #   Column         Non-Null Count  Dtype  
+---  ------         --------------  -----  
+ 0   Id             150 non-null    int64  
+ 1   SepalLengthCm  150 non-null    float64
+ 2   SepalWidthCm   150 non-null    float64
+ 3   PetalLengthCm  150 non-null    float64
+ 4   PetalWidthCm   150 non-null    float64
+ 5   Species        150 non-null    object 
+dtypes: float64(4), int64(1), object(1)
+memory usage: 7.2+ KB
+df.corr()
+Id	SepalLengthCm	SepalWidthCm	PetalLengthCm	PetalWidthCm
+Id	1.000000	0.716676	-0.397729	0.882747	0.899759
+SepalLengthCm	0.716676	1.000000	-0.109369	0.871754	0.817954
+SepalWidthCm	-0.397729	-0.109369	1.000000	-0.420516	-0.356544
+PetalLengthCm	0.882747	0.871754	-0.420516	1.000000	0.962757
+PetalWidthCm	0.899759	0.817954	-0.356544	0.962757	1.000000
+df.isnull().sum()
+Id               0
+SepalLengthCm    0
+SepalWidthCm     0
+PetalLengthCm    0
+PetalWidthCm     0
+Species          0
+dtype: int64
+Histrogram
+fig = plt.figure(figsize=(20, 12))
+df.hist(ax = fig.gca(), color="skyblue", edgecolor="black")
+plt.show()
+
+Visualize the whole dataset
+sns.pairplot(df, hue='Species')
+<seaborn.axisgrid.PairGrid at 0x1c80a71bf70>
+
+plt.figure(figsize=(20, 10))
+corr_mat = df.corr()
+cm = sns.heatmap(corr_mat, annot=True, cmap="seismic")
+cm.set_title("Feature Correlation Matrix")
+plt.show()
+
+sns.violinplot(y='Species',x='SepalLengthCm',data=df,inner='quartile')
+plt.show()
+sns.violinplot(y='Species',x='SepalWidthCm',data=df,inner='quartile')
+plt.show()
+sns.violinplot(y='Species',x='PetalLengthCm',data=df,inner='quartile')
+plt.show()
+sns.violinplot(y='Species',x='PetalWidthCm',data=df,inner='quartile')
+plt.show()
+
+
+
+
+scatterplot
+df.groupby('Species').size()
+Species
+Iris-setosa        50
+Iris-versicolor    50
+Iris-virginica     50
+dtype: int64
+setosa = df[df['Species'] == "Iris-setosa"]
+virginica = df[df['Species'] == "Iris-virginica"]
+versicolor = df[df['Species'] == "Iris-versicolor"]
+plt.figure(figsize=(20, 10))
+plt.scatter(setosa['SepalLengthCm'], setosa['SepalWidthCm'], c="red", label="Setosa")
+plt.scatter(versicolor['SepalLengthCm'],versicolor['SepalWidthCm'], c="blue", label="Versicolor")
+plt.scatter(virginica['SepalLengthCm'],virginica['SepalWidthCm'], c="green", label="Virginica")
+plt.xlabel("Sepal Length")
+plt.ylabel("Sepal Width")
+plt.title("Sepal Length vs Width\n", fontsize=20)
+plt.legend()
+plt.show()
+
+plt.figure(figsize=(20, 10))
+plt.scatter(setosa['PetalLengthCm'], setosa['PetalWidthCm'], c="red", label="Setosa")
+plt.scatter(versicolor['PetalLengthCm'],versicolor['PetalWidthCm'], c="blue", label="Versicolor")
+plt.scatter(virginica['PetalLengthCm'],virginica['PetalWidthCm'], c="green", label="Virginica")
+plt.xlabel("Petal Length")
+plt.ylabel("Petal Width")
+plt.title("Petal Length vs Width\n", fontsize=20)
+plt.legend()
+plt.show()
+
+Encoding categorical dependent variable
+from sklearn.preprocessing import LabelEncoder
+X = df.drop(['Species'], 1)
+y = df['Species']
+le = LabelEncoder()
+y = le.fit_transform(y)
+Splitting the Dataset into the Training set and Test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state = 1)
+Selecting the Models and Metrics
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+lr = LogisticRegression()
+knn = KNeighborsClassifier()
+svm = SVC()
+nb = GaussianNB()
+dt = DecisionTreeClassifier()
+rf = RandomForestClassifier()
+Training and Evaluating the Models
+models = [lr, knn, svm, nb, dt, rf]
+scores = []
+for model in models:
+  model.fit(X_train, y_train)
+  y_pred = model.predict(X_test)
+  scores.append(accuracy_score(y_test, y_pred))
+  print("Accuracy of " + type(model).__name__ + " is", accuracy_score(y_test, y_pred))
+Accuracy of LogisticRegression is 1.0
+Accuracy of KNeighborsClassifier is 1.0
+Accuracy of SVC is 0.9777777777777777
+Accuracy of GaussianNB is 1.0
+Accuracy of DecisionTreeClassifier is 0.9777777777777777
+Accuracy of RandomForestClassifier is 1.0
+results = pd.DataFrame({
+    'Models': ['Logistic Regression', 'K-Nearest Neighbors', 'Support Vector Machine', 'Naive Bayes','Decision Tree', 'Random Forest'],
+    'Accuracy': scores})
+
+results = results.sort_values(by='Accuracy', ascending=False)
+print(results)
+                   Models  Accuracy
+0     Logistic Regression  1.000000
+1     K-Nearest Neighbors  1.000000
+3             Naive Bayes  1.000000
+5           Random Forest  1.000000
+2  Support Vector Machine  0.977778
+4           Decision Tree  0.977778
+THANK YOU
+ 
